@@ -1,4 +1,4 @@
---Crear fragmentación:
+--Crear fragmentaciÃ³n:
 create database datoscovid_norte
 use datoscovid_norte
 SELECT * INTO datoscovid_norte FROM covidHistorico.dbo.datoscovid 
@@ -43,7 +43,7 @@ FROM OPENQUERY(MYSQL_SUR, 'SELECT * FROM covidhistorico.covidhistorico_sur LIMIT
 EXEC sp_addlinkedserver
    @server = 'SQL_NORTE',
    @srvproduct = '',
-   @provider = 'SQLNCLI11',          -- o 'MSOLEDBSQL' si usas la versión más reciente
+   @provider = 'SQLNCLI11',          -- o 'MSOLEDBSQL' si usas la versiÃ³n mÃ¡s reciente
    @datasrc = '192.168.229.8';       -- IP o nombre del servidor remoto
 
 EXEC sp_addlinkedsrvlogin
@@ -64,7 +64,7 @@ EXEC sp_addlinkedserver
     @server = 'SQL_CENTRO',
     @srvproduct = '',
     @provider = 'SQLNCLI11',           -- o 'MSOLEDBSQL' si lo prefieres
-    @datasrc = 'localhost';            -- también puede ser '.' o el nombre de tu instancia
+    @datasrc = 'localhost';            -- tambiÃ©n puede ser '.' o el nombre de tu instancia
 
 EXEC sp_addlinkedsrvlogin
     @rmtsrvname = 'SQL_CENTRO',
@@ -231,7 +231,7 @@ ORDER BY Total_Casos_Recuperados_Neumonia DESC;
 -- Consulta 7
 WITH CasosMensuales AS (
     SELECT 
-        YEAR(CAST(d.FECHA_INGRESO AS date)) AS Año,
+        YEAR(CAST(d.FECHA_INGRESO AS date)) AS AÃ±o,
         MONTH(CAST(d.FECHA_INGRESO AS date)) AS Mes,
         c.entidad AS Estado,
         SUM(CASE WHEN d.CLASIFICACION_FINAL IN (1, 2, 3, 6) THEN 1 ELSE 0 END) AS Total_Casos
@@ -283,18 +283,18 @@ WITH CasosMensuales AS (
 ),
 RankingMensual AS (
     SELECT 
-        Año,
+        AÃ±o,
         Estado,
         Mes,
         Total_Casos,
-        RANK() OVER (PARTITION BY Año, Estado ORDER BY Total_Casos DESC) AS Ranking
+        RANK() OVER (PARTITION BY AÃ±o, Estado ORDER BY Total_Casos DESC) AS Ranking
     FROM CasosMensuales
 )
 SELECT 
-    Año,
+    AÃ±o,
     Estado,
     Mes,
     Total_Casos
 FROM RankingMensual
 WHERE Ranking = 1
-ORDER BY Año, Estado;
+ORDER BY AÃ±o, Estado;
